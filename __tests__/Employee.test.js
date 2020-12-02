@@ -5,12 +5,17 @@ test('creates a new employee',  () => {
 
     expect(typeof employee).toBe('object');
 });
+test('creates employee ID', () => {
+    const id = Number;
+    const employee = new Employee('Bud', Number);
+        expect(employee.getId()).toBe(Number);
+})
 test('creates employee email attribute',  () => {
-    const email = 'examp@le.com'
+    const email = 'examp@le.com';
     const employee = new Employee('Bud',2, email);
     expect(employee.email).toBe(email);
 });
-test('checks employee name',  () => {
+test('creates employee name attribute',  () => {
     const name = 'bud';
     const employee = new Employee(name);
     expect(employee.getName()).toBe(name);

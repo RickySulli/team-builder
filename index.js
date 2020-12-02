@@ -57,34 +57,30 @@ inquirer
             "Engineer"
         ],
         validate: validateInput
-    }])
-    .then(function({name, id, email, role}){
-        let roleInfo = "";
-        if (role === "Engineer") {
-            roleInfo = "GitHub username";
-        } else if (role === "Intern") {
-            roleInfo = "school name";
-        }else{
-            roleInfo = "office phone number"
-        }
-            inquirer.prompt([
-            {   
-                type: 'input',
-                name: 'roleInfo',
-                message: `Enter team member's ${roleInfo}`
-
-            },
-            // {   
-            //     name: 'newMember',
-            //     type: 'list',
-            //     message: "Would you like to add more members to your team?",
-            //     choices: [
-            //         "YES",
-            //         "NO"
-            //     ]
-            
-            // },
-        ])
-
+    },
+    {
+        type: 'input',
+        name: 'github',
+        message: 'What is your github username?',
+        when: (answers) => answers.role === 'Engineer'
+    },
+    {
+        type: 'number',
+        name: 'officeLine',
+        message: "What is your office phone number?",
+        when: (answers) => answers.role === "Manager"
+    },
+    {
+        type: 'input',
+        name: 'school',
+        message: "What school did you attend?",
+        when: (answers) => answers.role === 'Intern'
+    },
+    {
+        type: 'confirm',
+        name: 'moreEmployees',
+        message: "Would you like to add additional employees?"
     }
+])
+   
 }
