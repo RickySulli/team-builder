@@ -5,8 +5,7 @@ const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
 const fs = require('fs');
 const generatePage = require('./src/htmlrender')
-const validate = require('./validate')
-
+const validate = require('./src/validate')
 
 const team = [];
 //make functions to elimitate repetitive if statements
@@ -31,7 +30,7 @@ let validatePhone = value => {
         return "please enter a 10 digit phone number"
     }
 }
-let validateNumber = value =>{
+let validateId = value =>{
    if(/^\d{6}(\s*,\s*\d{6})*$/.test(value)){
        return true
    }else{
@@ -51,7 +50,7 @@ const createManager = () => {
             name: 'managerId',
             type: 'number',
             message: "What is your team manager ID number?",
-            validate: validateNumber 
+            validate: validateId 
         },
         {
             name: 'managerEmail',
@@ -69,16 +68,29 @@ const createManager = () => {
     ]) .then(mAnswers => {
         let manager = new Manager(mAnswers.managerName, mAnswers.managerId, mAnswers.managerEmail, mAnswers.officeNumber)
         team.push(manager)
-        //console.log(team);   
+        //ask if the user wants more employees
+        promptUser()  
     })
-
 };
-
+//prompt user to see if they want to add more employees
+const promptUser = () =>{
+    inquirer.prompt([
+        {
+            name:'addEmployees',
+            type: 'list',
+            message: 'Would you like to add more employees?',
+            choices:['YES', 'NO']
+        }
+    ]).then(answer =>{
+        if(answer.addEmployees === 'YES'){
+            createTeam()
+        }else if(answer.addEmployees === 'NO'){
+            console.log(team);
+        }
+    })
+}
+//find out what kind of team member needs to be added
 const createTeam = (teamData) => {
-    //if there isn't a team array create one
-    // if(!teamData.info){
-    //     teamData.info =[];
-    // }
     return inquirer
         .prompt([
         {
@@ -90,19 +102,20 @@ const createTeam = (teamData) => {
                 "Engineer",
                 "I am done adding employees"
             ],
-            validate: validateInput
+            
         }
     ])
     .then(answer => {
-        if(answer.choices === 'Intern'){
+        if(answer.role === "Intern"){
             createIntern()
-        }else if(answer.choices === "Engineer"){
+        }else if(answer.role === "Engineer"){
             createEngineer()
-        }else if(answer.choices === 'I am done adding employees'){
+        }else if(answer.role === 'I am done adding employees'){
             console.log(team);
         }
     })
 }
+//this will be the user prompt for entering info for interns
 const createIntern = () => {
     inquirer .prompt([
         {
@@ -115,26 +128,29 @@ const createIntern = () => {
             type: 'number',
             name: 'id',
             message: "What is the intern's id?",
-            validate: validateInput
+            validate: validateId
 
         },
         {
             type: 'input',
             name: 'email',
             message: "What is the intern's email address?",
-            validate: validateInput
+            validate: validateEmail
         },
         {
             type: 'input',
             name: 'school',
             message: "What school did the intern attend?",
         }
+        //create a new intern object
     ]).then(iAnswers => {
         let intern = new Intern(iAnswers.name, iAnswers.id, iAnswers.email, iAnswers.school)
             team.push(intern)
-            return createTeam();
+            //ask if they want more employees
+            promptUser();
     })
 };
+//this is where the user will be prompt to enter info about Engineers
 const createEngineer = () => {
     inquirer.prompt([
         {
@@ -147,26 +163,29 @@ const createEngineer = () => {
             type: 'number',
             name: 'id',
             message: "What is the Engineer's id?",
-            validate: validateInput
+            validate: validateId
         },
         {
             type: 'input',
             name: 'email',
             message: "What is the Engineer's email address?",
-            validate: validateInput
+            validate: validateEmail
         },
         {
             type: 'input',
             name: 'username',
-            message: "What is the Engineer's github username?"
+            message: "What is the Engineer's github username?",
+            validate: validateInput
         }
+        //create a new engineer object
     ]).then(eAnswers => {
-        let engingeer = new Engineer(eAnswers.name, eAnswers.id, eAnswers.email, eAnswers.username)
+        let engineer = new Engineer(eAnswers.name, eAnswers.id, eAnswers.email, eAnswers.username)
             team.push(engineer)
-            return createTeam();
+        //ask if they want more employees    
+            promptUser();
     })
 }
-
+//call the first prompt
 createManager()
     
 
