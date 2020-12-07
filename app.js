@@ -85,11 +85,7 @@ const promptUser = () =>{
         if(answer.addEmployees === 'YES'){
             createTeam()
         }else if(answer.addEmployees === 'NO'){
-            const pageHTML = generatePage(employees);
-            fs.writeFile('./dist/index.html', pageHTML, (err) => {
-                if(err) throw new Error(err);
-                console.log("Success!!");
-            });
+         makeProfile()
         }
     });
 }
@@ -115,11 +111,7 @@ const createTeam = (teamData) => {
         }else if(answer.role === "Engineer"){
             createEngineer()
         }else if(answer.role === 'I am done adding employees'){
-            const pageHTML = generatePage(employees);
-            fs.writeFile('./dist/index.html', pageHTML, (err) => {
-                if(err) throw new Error(err);
-                console.log("Success!!");
-            });
+            makeProfile()
         }
     });
 }
@@ -196,8 +188,16 @@ const createEngineer = () => {
 //call the first prompt
 createManager()
 
-    
-   
+const makeProfile = (fileName) => {
+    fileName = fs.writeFile('./dist/index.html', generatePage(employees), (err => {
+        if (err) {
+            console.log('Error: ' + err);
+        } else {
+            console.log('\n ======= Team Profile created in: /dist/index.html! ========');
+        }
+    }));
+};
+
 
 
   
