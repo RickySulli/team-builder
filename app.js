@@ -4,10 +4,10 @@ const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
 const fs = require('fs');
-const generatePage = require('./src/htmlrender')
-const validate = require('./src/validate')
+const generatePage = require('./lib/htmlrender')
 
-const team = [];
+
+const employees = [];
 //make functions to elimitate repetitive if statements
 let validateInput = value =>{
     if (value != "") {
@@ -67,7 +67,7 @@ const createManager = () => {
                     
     ]) .then(mAnswers => {
         let manager = new Manager(mAnswers.managerName, mAnswers.managerId, mAnswers.managerEmail, mAnswers.officeNumber)
-        team.push(manager)
+        employees.push(manager)
         //ask if the user wants more employees
         promptUser()  
     })
@@ -85,9 +85,13 @@ const promptUser = () =>{
         if(answer.addEmployees === 'YES'){
             createTeam()
         }else if(answer.addEmployees === 'NO'){
-            console.log(team);
+            const pageHTML = generatePage(employees);
+            fs.writeFile('./dist/index.html', pageHTML, (err) => {
+                if(err) throw new Error(err);
+                console.log("Success!!");
+            });
         }
-    })
+    });
 }
 //find out what kind of team member needs to be added
 const createTeam = (teamData) => {
@@ -111,9 +115,13 @@ const createTeam = (teamData) => {
         }else if(answer.role === "Engineer"){
             createEngineer()
         }else if(answer.role === 'I am done adding employees'){
-            console.log(team);
+            const pageHTML = generatePage(employees);
+            fs.writeFile('./dist/index.html', pageHTML, (err) => {
+                if(err) throw new Error(err);
+                console.log("Success!!");
+            });
         }
-    })
+    });
 }
 //this will be the user prompt for entering info for interns
 const createIntern = () => {
@@ -145,7 +153,7 @@ const createIntern = () => {
         //create a new intern object
     ]).then(iAnswers => {
         let intern = new Intern(iAnswers.name, iAnswers.id, iAnswers.email, iAnswers.school)
-            team.push(intern)
+            employees.push(intern)
             //ask if they want more employees
             promptUser();
     })
@@ -180,14 +188,16 @@ const createEngineer = () => {
         //create a new engineer object
     ]).then(eAnswers => {
         let engineer = new Engineer(eAnswers.name, eAnswers.id, eAnswers.email, eAnswers.username)
-            team.push(engineer)
+            employees.push(engineer)
         //ask if they want more employees    
             promptUser();
     })
 }
 //call the first prompt
 createManager()
+
     
+   
 
 
   
