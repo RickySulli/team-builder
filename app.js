@@ -4,7 +4,10 @@ const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
 const fs = require('fs');
-const generatePage = require('./lib/htmlrender')
+
+
+const htmlRender = require('./lib/htmlrender');
+
 
 
 const employees = [];
@@ -185,19 +188,13 @@ const createEngineer = () => {
             promptUser();
     })
 }
-//call the first prompt
-createManager()
 
-const makeProfile = (fileName) => {
-    fileName = fs.writeFile('./dist/index.html', generatePage(employees), (err => {
-        if (err) {
-            console.log('Error: ' + err);
-        } else {
-            console.log('\n ======= Team Profile created in: /dist/index.html! ========');
-        }
-    }));
+
+makeProfile = (fileName) => {
+    fileName = fs.writeFile('../dist/index.html', htmlRender(employees), "utf-8");
 };
 
-
+//call the first prompt
+createManager()
 
   
