@@ -5,12 +5,10 @@ const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
 const fs = require('fs');
 
-
 const htmlRender = require('./lib/htmlrender');
 
-
-
 const employees = [];
+
 //make functions to elimitate repetitive if statements
 let validateInput = value =>{
     if (value != "") {
@@ -88,7 +86,7 @@ const promptUser = () =>{
         if(answer.addEmployees === 'YES'){
             createTeam()
         }else if(answer.addEmployees === 'NO'){
-         makeProfile()
+         makeProfile(employees)
         }
     });
 }
@@ -114,7 +112,7 @@ const createTeam = (teamData) => {
         }else if(answer.role === "Engineer"){
             createEngineer()
         }else if(answer.role === 'I am done adding employees'){
-            makeProfile()
+            makeProfile(employees)
         }
     });
 }
@@ -190,8 +188,15 @@ const createEngineer = () => {
 }
 
 
-makeProfile = (fileName) => {
-    fileName = fs.writeFile('../dist/index.html', htmlRender(employees), "utf-8");
+makeProfile = (employees) => {
+    let data = htmlRender(employees);
+    fs.writeFile('../dist/index.html', data, (err) =>{
+        if(err)
+            throw err
+        else {
+            console.log("SUCCESS!!")
+        }
+    });
 };
 
 //call the first prompt
