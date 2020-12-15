@@ -1,43 +1,16 @@
+const fs = require('fs');
 const inquirer = require('inquirer');
+const path = require('path');
+__dirname = path.resolve();
 const Employee = require('./lib/Employee');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
-const fs = require('fs');
-
-const htmlRender = require('./lib/htmlrender');
+const verify = require('./lib/verify')
+const generateHtml = require('./src/htmlrender');
 
 const employees = [];
 
-//make functions to elimitate repetitive if statements
-let validateInput = value =>{
-    if (value != "") {
-        return true;
-    }else{
-        return "Please answer the question.";
-    }
-}
-let validateEmail = value =>{
-    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value))
-        {return true
-        }else{
-            return "This email address is invalid!";
-        }
-}
-let validatePhone = value => {
-    if(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(value)){
-        return true
-    }else{
-        return "please enter a 10 digit phone number"
-    }
-}
-let validateId = value =>{
-   if(/^\d{6}(\s*,\s*\d{6})*$/.test(value)){
-       return true
-   }else{
-       return "please enter a six digit number"
-   }
-}
 //prompt user to create team manager.
 const createManager = () => {
     inquirer.prompt([
@@ -45,25 +18,25 @@ const createManager = () => {
             name: "managerName",
             type: 'input',
             message: "What is your team manager name?",
-            validate: validateInput
+            validate: verify.validateInput
         },
         {
             name: 'managerId',
             type: 'number',
             message: "What is your team manager ID number?",
-            validate: validateId 
+            validate: verify.validateId 
         },
         {
             name: 'managerEmail',
             type: 'input',
             message: 'What is your team manager email address?',
-            validate: validateEmail
+            validate: verify.validateEmail
         },
         {
             name: 'officeNumber',
             type: 'input',
             message: "What's your office Number?",
-            validate: validatePhone
+            validate: verify.validatePhone
         }
                     
     ]) .then(mAnswers => {
@@ -86,7 +59,9 @@ const promptUser = () =>{
         if(answer.addEmployees === 'YES'){
             createTeam()
         }else if(answer.addEmployees === 'NO'){
-         makeProfile(employees)
+            makeProfile(employees)
+        
+            //  makeProfile(employees)
         }
     });
 }
@@ -123,25 +98,26 @@ const createIntern = () => {
             type:'input',
             name: 'name',
             message: "What is the intern's name?",
-            validate: validateInput
+            validate: verify.validateInput
         },
         {
             type: 'number',
             name: 'id',
             message: "What is the intern's id?",
-            validate: validateId
+            validate: verify.validateId
 
         },
         {
             type: 'input',
             name: 'email',
             message: "What is the intern's email address?",
-            validate: validateEmail
+            validate: verify.validateEmail
         },
         {
             type: 'input',
             name: 'school',
             message: "What school did the intern attend?",
+            validate:verify.validateInput
         }
         //create a new intern object
     ]).then(iAnswers => {
@@ -158,25 +134,25 @@ const createEngineer = () => {
             type:'input',
             name: 'name',
             message: "What is the Engineer's name?",
-            validate: validateInput
+            validate: verify.validateInput
         },
         {
             type: 'number',
             name: 'id',
             message: "What is the Engineer's id?",
-            validate: validateId
+            validate: verify.validateId
         },
         {
             type: 'input',
             name: 'email',
             message: "What is the Engineer's email address?",
-            validate: validateEmail
+            validate: verify.validateEmail
         },
         {
             type: 'input',
             name: 'username',
             message: "What is the Engineer's github username?",
-            validate: validateInput
+            validate: verify.validateInput
         }
         //create a new engineer object
     ]).then(eAnswers => {
@@ -185,12 +161,12 @@ const createEngineer = () => {
         //ask if they want more employees    
             promptUser();
     })
+    
 }
 
-
-makeProfile = (employees) => {
-    let data = htmlRender(employees);
-    fs.writeFile('../dist/index.html', data, (err) =>{
+makeProfile = () => {
+    console.log(employees)
+    fs.writeFileSync(path.join(__dirname, '/dist/index.html'), generateHtml(employees), 'utf-8', (err) =>{
         if(err)
             throw err
         else {
