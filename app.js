@@ -165,7 +165,7 @@ const createEngineer = () => {
 }
 
 makeProfile = () => {
-    console.log(employees)
+    // console.log(employees)
     fs.writeFileSync(path.join(__dirname, '/dist/index.html'), generateHtml(employees), 'utf-8', (err) =>{
         if(err)
             throw err
