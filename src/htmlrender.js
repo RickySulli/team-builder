@@ -7,7 +7,36 @@ const employeeCards = [];
 // function to create html and hold separate employees.
 const generateHtml = (employees) => {
   let team 
- var boilerPlate = `<!DOCTYPE html>
+ 
+  employees.forEach((employee) => {
+ 
+
+let employeeTrait
+let role= employee.getRole();
+
+    if(role=== 'Manager'){
+      employeeTrait = employee.getOfficeNumber();
+    }else if(role === 'Intern'){
+      employeeTrait = employee.getSchool();
+    }else if (role === 'Engineer'){
+      employeeTrait = employee.getGithub();
+    };
+    const html = `<div class="containter">
+    <div class="card">
+        <ul class="list-group">
+            <li class="list-group-item">${employee.getName()}</li>
+            <li class="list-group-item">${employee.getRole()}</li>
+            <li class="list-group-item">${employee.getId()}</li>
+            <li class="list-group-item">${employee.getEmail()}</li>
+            <li class="list-group-item">${employeeTrait}</li>
+        </ul>
+    </div>
+</div>
+    `
+    employeeCards.push(html);
+  })
+team = employeeCards.join('')
+var boilerPlate = `<!DOCTYPE html>
  <html lang="en">
  <head>
      <meta charset="UTF-8">
@@ -29,36 +58,6 @@ const generateHtml = (employees) => {
  </html>
  
  `
-  employees.forEach((employee) => {
- 
-
-let employeeTrait
-let role= employee.getRole();
-
-    if(role=== 'Manager'){
-      employeeTrait = employee.getOfficeNumber();
-    }else if(role === 'Intern'){
-      employeeTrait = employee.getSchool()
-    }else if (role === 'Engineer'){
-      employeeTrait = employee.getGithub();
-    };
-    const html = `<div class="containter">
-    <div class="card">
-        <ul class="list-group">
-            <li class="list-group-item">${employee.getName()}</li>
-            <li class="list-group-item">${employee.getRole()}</li>
-            <li class="list-group-item">${employee.getId()}</li>
-            <li class="list-group-item">${employee.getEmail()}</li>
-            <li class="list-group-item">${employeeTrait}</li>
-        </ul>
-    </div>
-</div>
-
-    `
-    employeeCards.push(html);
-  })
-  
-team = employeeCards.join('')
   return boilerPlate
 
 }  
